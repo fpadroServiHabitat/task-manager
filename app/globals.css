@@ -1,31 +1,42 @@
-@import "tailwindcss";
+ @import "tailwindcss";
 
+@variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+/*
 @theme {
-  --color-blue-100: #dbeafe;
-  --color-blue-200: #bfdbfe;
-  --color-blue-300: #93c5fd;
-  --color-blue-400: #60a5fa;
-  --color-blue-800: #1e40af;
-  --color-yellow-200: #fef08a;
-  --color-yellow-500: #eab308;
-  --color-yellow-600: #ca8a04;
-  --color-gray-400: #9ca3af;
-  --color-gray-900: #111827;
+  --color-card: hsl(207 97% 12%);
+  --color-background-light: hsl(0 0% 100%);
+  --color-background-dark: hsl(207 95% 8%);
+  --color-background-custom: hsl(187 71% 82%);
+  --color-background-pastel: hsl(279 100% 93%);
 }
 
-:root {
-  --background: #dbeafe;
-  --foreground: #171717;
+@layer base {
+  [data-theme="light"] {
+    --color-card: hsl(207 97% 12%);
+  }
+  [data-theme="dark"] {
+    --color-card: hsl(0 0% 96%);
+  }
+  [data-theme="custom"] {
+    --color-card: hsl(182, 87%, 39%);
+  }
+  [data-theme="pastel"] {
+    --color-card: hsl(291 46% 83%);
+  }
 }
 
-.dark {
-  --background: #111827;
-  --foreground: #ffffff;
+:root[data-theme="light"] {
+  background-color: var(--color-background-light);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-minecraft), Arial, Helvetica, sans-serif;
+:root[data-theme="dark"] {
+  background-color: var(--color-background-dark);
 }
 
+:root[data-theme="custom"] {
+  background-color: var(--color-background-custom);
+}
+
+:root[data-theme="pastel"] {
+  background-color: var(--color-background-pastel);
+} */
