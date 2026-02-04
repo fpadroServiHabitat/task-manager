@@ -53,9 +53,9 @@ export default function Tasks() {
     e.preventDefault();
     if (newTaskText.trim()) {
       try {
-        await addTask(newTaskText, newTaskState);
+        const newTasks = await addTask(newTaskText, newTaskState);
+        setTasks(newTasks);
         setNewTaskText('');
-        loadTasks();
         alert('Tasca afegida correctament');
       } catch (error) {
         console.error('Error afegint tasca:', error);

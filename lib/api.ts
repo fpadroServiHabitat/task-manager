@@ -5,7 +5,7 @@ export interface Task {
   }  
 
   export const getTasks = async (): Promise<Task[]> => {
-    const response = await fetch('/api/dashboard');
+    const response = await fetch('/api');
     const data = await response.json();
     return data.tasks;
   };
@@ -23,7 +23,7 @@ export interface Task {
   };
 
   export const addTask = async (text: string, state: string): Promise<Task[]> => {
-    const response = await fetch('/api/dashboard', {
+    const response = await fetch('/api', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, state })
@@ -33,7 +33,7 @@ export interface Task {
   };
 
   export const updateTask = async (id: number, updates: Partial<Task>): Promise<Task[]> => {
-    const response = await fetch('/api/dashboard', {
+    const response = await fetch('/api', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, updates })
@@ -43,7 +43,7 @@ export interface Task {
   };
 
   export const deleteTask = async (id: number): Promise<Task[]> => {
-    const response = await fetch('/api/dashboard', {
+    const response = await fetch('/api', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id })

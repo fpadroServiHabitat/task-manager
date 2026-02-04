@@ -5,6 +5,11 @@ import { Task } from "@/lib/api";
 
 const tasksPath = path.join(process.cwd(), 'data', 'tasks.json');
 
+function dbConnection (savedTasks: { tasks: Task[] }){
+    fs.writeFileSync(tasksPath, JSON.stringify(savedTasks, null, 2));
+    return NextResponse.json({ tasks: savedTasks.tasks });
+}
+
 const readTasks = () => {
     try {
       const data = fs.readFileSync(tasksPath, 'utf8');
@@ -13,7 +18,6 @@ const readTasks = () => {
       return { tasks: [] };
     }
   };
-
 export async function GET() {
     const savedTasks = readTasks();
     return NextResponse.json({ tasks: savedTasks.tasks });
@@ -33,9 +37,9 @@ export async function POST(request: NextRequest) {
         };
         
         savedTasks.tasks.push(newTask);
-        fs.writeFileSync(tasksPath, JSON.stringify(savedTasks, null, 2));
         
-        return NextResponse.json({ ok: true });
+        return dbConnection(savedTasks);
+
     } catch (error) {
         return NextResponse.json({ ok: false, message:'Error afegint tasca' }, { status: 500 });
     }
@@ -54,9 +58,8 @@ export async function PUT(request: NextRequest) {
 
         Object.assign(savedTasks.tasks[taskIndex], updates);
         
-        fs.writeFileSync(tasksPath, JSON.stringify(savedTasks, null, 2));
-        
-        return NextResponse.json({tasks: savedTasks.tasks});
+        return dbConnection(savedTasks);
+
     } catch (error) {
         return NextResponse.json({ ok: false, message: 'Error actualitzant' }, { status: 500 });
     }
@@ -75,9 +78,8 @@ export async function DELETE(request: NextRequest) {
         }
         
         savedTasks.tasks.splice(taskIndex, 1);
-        fs.writeFileSync(tasksPath, JSON.stringify(savedTasks, null, 2));
         
-        return NextResponse.json({ tasks: savedTasks.tasks });
+        return dbConnection(savedTasks);
     } catch (error) {
         return NextResponse.json({ ok: false, message: 'Error eliminant tasca' }, { status: 500 });
     }
