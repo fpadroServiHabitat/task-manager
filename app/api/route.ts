@@ -1,32 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { put, list } from '@vercel/blob'
 import { Task } from "@/lib/api";
 
-const tasksPath = path.join(process.cwd(), 'data', 'tasks.json');
 
-function dbConnection (savedTasks: { tasks: Task[] }){
-    fs.writeFileSync(tasksPath, JSON.stringify(savedTasks, null, 2));
+async function dbConnection (savedTasks: { tasks: Task[] }){
+    const jsonData = JSON.stringify(savedTasks, null, 2);
+    await put("tasks.json", jsonData, { access: "public" });
     return NextResponse.json({ tasks: savedTasks.tasks });
 }
 
-const readTasks = () => {
+const readTasks = async () => {
     try {
-      const data = fs.readFileSync(tasksPath, 'utf8');
-      return JSON.parse(data);
+      const { blobs } = await list({ prefix: "tasks.json"});
+
+      if (blobs.length > 0) {
+        const response = await fetch(blobs[0].url);
+        const data = await response.text();
+        return JSON.parse(data);
+      }
+      return { tasks: [] };
     } catch (error) {
       return { tasks: [] };
     }
   };
+
 export async function GET() {
-    const savedTasks = readTasks();
+    const savedTasks = await readTasks();
     return NextResponse.json({ tasks: savedTasks.tasks });
 }
 
 export async function POST(request: NextRequest) {
     try {
         const { text, state } = await request.json();
-        const savedTasks = readTasks();
+        const savedTasks = await readTasks();
         const maxId = savedTasks.tasks.length > 0 ? Math.max(...savedTasks.tasks.map((t: Task) => t.id)) : 0;
         const newId = maxId + 1;
 
@@ -48,7 +54,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
     try {
         const { id, updates } = await request.json();
-        const savedTasks = readTasks();
+        const savedTasks = await readTasks();
 
         const taskIndex = savedTasks.tasks.findIndex((t: Task) => t.id === id);
         
@@ -58,7 +64,7 @@ export async function PUT(request: NextRequest) {
 
         Object.assign(savedTasks.tasks[taskIndex], updates);
         
-        return dbConnection(savedTasks);
+        return await dbConnection(savedTasks);
 
     } catch (error) {
         return NextResponse.json({ ok: false, message: 'Error actualitzant' }, { status: 500 });
@@ -69,7 +75,7 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
     try {
         const { id } = await request.json();
-        const savedTasks = readTasks();
+        const savedTasks = await readTasks();
         
         const taskIndex = savedTasks.tasks.findIndex((t: Task) => t.id === id);
         
@@ -79,7 +85,7 @@ export async function DELETE(request: NextRequest) {
         
         savedTasks.tasks.splice(taskIndex, 1);
         
-        return dbConnection(savedTasks);
+        return await dbConnection(savedTasks);
     } catch (error) {
         return NextResponse.json({ ok: false, message: 'Error eliminant tasca' }, { status: 500 });
     }
