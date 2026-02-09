@@ -6,8 +6,11 @@ export interface Task {
 
   export const getTasks = async (): Promise<Task[]> => {
     const response = await fetch('/api');
+    if (!response.ok) {
+      throw new Error('API Error');
+    }
     const data = await response.json();
-    return data.tasks;
+    return data.tasks || [];
   };
 
   export const getOrderedTasks = async (): Promise<Task[][]> => {
@@ -28,8 +31,11 @@ export interface Task {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, state })
     });
+    if (!response.ok) {
+      throw new Error('API Error');
+    }
     const data = await response.json();
-    return data.tasks;
+    return data.tasks || [];
   };
 
   export const updateTask = async (id: number, updates: Partial<Task>): Promise<Task[]> => {
@@ -38,8 +44,11 @@ export interface Task {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, updates })
     });
+    if (!response.ok) {
+      throw new Error('API Error');
+    }
     const data = await response.json();
-    return data.tasks;
+    return data.tasks || [];
   };
 
   export const deleteTask = async (id: number): Promise<Task[]> => {
@@ -48,7 +57,10 @@ export interface Task {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id })
     });
+    if (!response.ok) {
+      throw new Error('API Error');
+    }
     const data = await response.json();
-    return data.tasks;
+    return data.tasks || [];
   };
 

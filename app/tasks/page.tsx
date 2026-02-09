@@ -17,18 +17,20 @@ export default function Tasks() {
   const loadTasks = async () => {
     try {
       const fetchedTasks = await getTasks();
-      setTasks(fetchedTasks);
+      setTasks(fetchedTasks || []);
     } catch (error) {
       console.error('Error carregant tasques:', error);
+      setTasks([]);
     }
   };
 
   const deleteT = async (id: number) => {
     try {
       const fetchedTasks = await deleteTask(id); 
-      setTasks(fetchedTasks);
+      setTasks(fetchedTasks || []);
     } catch (error) {
-      console.error('Error carregant tasques:', error);
+      console.error('Error eliminant tasques:', error);
+      setTasks([]);
     }
   };
 
@@ -41,8 +43,8 @@ export default function Tasks() {
     
     try {
       const newTasks = await updateTask(task.id, { state: nextState });
-      setTasks(newTasks);
-      alert('Estat actualitza');
+      setTasks(newTasks || []);
+      alert('Estat actualitzat');
     } catch (error) {
       console.error('Error actualitzant estat:', error);
     }
@@ -54,7 +56,7 @@ export default function Tasks() {
     if (newTaskText.trim()) {
       try {
         const newTasks = await addTask(newTaskText, newTaskState);
-        setTasks(newTasks);
+        setTasks(newTasks || []);
         setNewTaskText('');
         alert('Tasca afegida correctament');
       } catch (error) {
@@ -72,7 +74,7 @@ export default function Tasks() {
     if (editingId && editingText.trim()) {
       try {
         const newTasks = await updateTask(editingId, { text: editingText });
-        setTasks(newTasks);
+        setTasks(newTasks || []);
         setEditingId(null);
         setEditingText('');
         alert('Text actualitzat');
