@@ -32,7 +32,8 @@ export interface Task {
       body: JSON.stringify({ text, state })
     });
     if (!response.ok) {
-      throw new Error('API Error');
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Server error: ${response.status}`);
     }
     const data = await response.json();
     return data.tasks || [];
