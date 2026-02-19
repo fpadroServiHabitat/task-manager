@@ -1,34 +1,69 @@
 {
-  "tasks": [
+  "users": [
     {
-      "id": 8,
-      "text": "siuqew",
-      "state": "Completada"
+      "id": 1,
+      "email": "admin@test.com",
+      "password": "123",
+      "tasks": [
+        {
+          "id": 1,
+          "text": "nop",
+          "state": "En progrés"
+        },
+        {
+          "id": 2,
+          "text": "tasca nova",
+          "state": "Pendent"
+        },
+        {
+          "id": 3,
+          "text": "sws",
+          "state": "Completada"
+        },
+        {
+          "id": 4,
+          "text": "de",
+          "state": "En progrés"
+        },
+        {
+          "id": 5,
+          "text": "ftr",
+          "state": "Completada"
+        }
+      ]
     },
-    {
-      "id": 9,
-      "text": "nop",
-      "state": "En progrés"
-    },
-    {
-      "id": 10,
-      "text": "tasca nova",
-      "state": "Pendent"
-    },
-    {
-      "id": 11,
-      "text": "sws",
-      "state": "Completada"
-    },
-    {
-      "id": 12,
-      "text": "de",
-      "state": "En progrés"
-    },
-    {
-      "id": 13,
-      "text": "ftr",
-      "state": "Completada"
+
+    { 
+      "id": 2,
+      "email": "user@test.com",
+      "password": "123",
+      "tasks": [
+        {
+          "id": 1,
+          "text": "sip",
+          "state": "En progrés"
+        },
+        {
+          "id": 2,
+          "text": "tasca vella",
+          "state": "Pendent"
+        },
+        {
+          "id": 3,
+          "text": "siu",
+          "state": "Completada"
+        },
+        {
+          "id": 4,
+          "text": "deres",
+          "state": "En progrés"
+        },
+        {
+          "id": 5,
+          "text": "foreal",
+          "state": "Completada"
+        }
+      ]
     }
   ]
 }

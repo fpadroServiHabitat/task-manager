@@ -1,24 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { put, list } from '@vercel/blob'
+import { Redis } from '@upstash/redis'
 import { Task } from "@/lib/api";
 
 
+const redis = Redis.fromEnv();
+
+
 async function dbConnection (savedTasks: { tasks: Task[] }){
-    const jsonData = JSON.stringify(savedTasks, null, 2);
-    await put("tasks.json", jsonData, { access: "public" });
+    await redis.set('tasks', savedTasks);
     return NextResponse.json({ tasks: savedTasks.tasks });
 }
 
-const readTasks = async () => {
+const readTasks = async (): Promise<{ tasks: Task[] }> => {
     try {
-      const { blobs } = await list({ prefix: "tasks.json"});
-
-      if (blobs.length > 0) {
-        const response = await fetch(blobs[0].url);
-        const data = await response.text();
-        return JSON.parse(data);
-      }
-      return { tasks: [] };
+      const data = await redis.get("tasks") as { tasks: Task[] } | null;
+      return data || { tasks: [] };
     } catch (error) {
       console.error('Error reading tasks:', error);
       return { tasks: [] };
