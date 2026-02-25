@@ -5,25 +5,17 @@ import { Task } from "@/lib/api";
 
 const redis = Redis.fromEnv();
 
-
-async function dbConnection (savedTasks: { tasks: Task[] }){
-    await redis.set('tasks', savedTasks);
-    return NextResponse.json({ tasks: savedTasks.tasks });
-}
-
-const readTasks = async (): Promise<{ tasks: Task[] }> => {
-    try {
-      const data = await redis.get("tasks") as { tasks: Task[] } | null;
-      return data || { tasks: [] };
-    } catch (error) {
-      console.error('Error reading tasks:', error);
-      return { tasks: [] };
+const readUser = async (userId: string) => {
+    const data = await redis.get("user:${userId}") as any | null;
+    if (!data){
+        throw new Error('Usuari ${userId} no trobat a la base de dades de Redis.')
     }
-  };
+    return data;
+}
 
 export async function GET() {
     try {
-        const savedTasks = await readTasks();
+        const savedTasks = await readUser();
         return NextResponse.json({ tasks: savedTasks.tasks || [] });
     } catch (error) {
         console.error('GET Error:', error);
@@ -47,7 +39,7 @@ export async function POST(request: NextRequest) {
         
         tasks.push(newTask);
         
-        return await dbConnection({ tasks });
+        return await redis.set("user:${userId}",{tasks});
 
     } catch (error) {
         console.error('POST Error:', error);

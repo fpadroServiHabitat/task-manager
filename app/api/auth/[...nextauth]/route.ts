@@ -2,6 +2,9 @@ import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import fs from 'fs';
 import path from 'path';
+import {Redis} from '@upstash/redis';
+
+const redis = Redis.fromEnv();
 
 const handler = NextAuth({
   providers: [
@@ -12,11 +15,16 @@ const handler = NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        const pathToFile = path.join(process.cwd(), 'data/tasks.json')
-        const fileContent = fs.readFileSync(pathToFile, 'utf8')
-        const data: any = JSON.parse(fileContent)
+        const userKeys = await redis.keys("user:*")
+        let foundUser = null
 
-        const foundUser = data.users.find((user: any) => user.email === credentials?.email)
+        for (const key of userKeys) {
+          const user = await redis.get(key) as any
+          if (user && user.email === credentials?.email) {
+            foundUser = user
+            break
+          }
+        }
 
         if (foundUser && foundUser.password === credentials?.password) {
           return { id: foundUser.id.toString(), email: foundUser.email, name: foundUser.email }
