@@ -3,8 +3,11 @@
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import ThemeToggle from '../components/ThemeToggle'
+import { migracio } from '../api/migrate/route'
 
 export default function LoginPage() {
+  migracio()
+  
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 

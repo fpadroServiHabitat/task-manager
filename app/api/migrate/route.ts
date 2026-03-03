@@ -5,7 +5,7 @@ import path from 'path'
 
 const redis = Redis.fromEnv()
 
-export async function GET() {
+export async function migracio() {
   try {
     // Comprovar si ja s'ha migrat
     const existingUser = await redis.get("user:1")
